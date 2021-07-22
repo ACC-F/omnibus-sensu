@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+# become our own process leader so we can kill our process tree
+unless Gem.win_platform?
+  Process.setpgid(0,0)
+end
+
+Signal.trap('INT') do
+  unless Gem.win_platform?
+    Process.kill(:INT, -Process.getpgid(Process.pid()))
+    sleep 1
+    Process.kill(:KILL, -Process.getpgid(Process.pid()))
+  end
+  # Trap interrupts to quit cleanly. See
+  # https://twitter.com/mitchellh/status/283014103189053442
+  exit 1
+end
+
+$:.push File.expand_path('../../lib', __FILE__)
+$stdout.sync = true
+
+require 'omnibus/cli'
+
+# Some platforms do not have a UTF-8 locale, so we need to enforce one
+# or else the cacert chain will break among other things
+Encoding.default_external = Encoding::UTF_8
+
+Omnibus::CLI::Runner.new(ARGV.dup).execute!
