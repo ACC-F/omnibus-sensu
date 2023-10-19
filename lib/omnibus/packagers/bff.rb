@@ -144,11 +144,11 @@ module Omnibus
           alt = path.gsub(/(:|,)/, "__")
           log.debug(log_key) { "Renaming #{path} to #{alt}" }
 
-          File.rename(path, alt) if File.exists?(path)
+          File.rename(path, alt) if File.exist?(path)
 
           # Create a config script if needed based on resources/bff/config.erb
           config_script_path = File.join(scripts_staging_dir, "config")
-          unless File.exists? config_script_path
+          unless File.exist? config_script_path
             render_template(resource_path("config.erb"),
               destination: "#{scripts_staging_dir}/config",
               variables: {

@@ -230,7 +230,7 @@ module Omnibus
       )
 
       # Append the contents of symlinks.erb if it exists
-      if File.exists?(resource_path("symlinks.erb"))
+      if File.exist?(resource_path("symlinks.erb"))
         File.open(pkg_metadata_file, "a") do |symlink|
           symlink.write(render_symlinks)
         end
